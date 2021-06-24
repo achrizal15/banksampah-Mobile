@@ -1,5 +1,5 @@
 import 'package:financial_app/daftar.dart';
-import 'package:financial_app/home.dart';
+import 'package:financial_app/navbar_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -116,7 +116,7 @@ class _LoginState extends State<Login> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => HomePage()),
+                                      builder: (context) => Navbarbottom()),
                                 );
                               }
                             },

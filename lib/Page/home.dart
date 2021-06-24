@@ -1,5 +1,9 @@
 import 'package:financial_app/Login.dart';
+import 'package:financial_app/Page/editprofile.dart';
+import 'package:financial_app/Page/popUpPage/about.dart';
+import 'package:financial_app/Page/popUpPage/notifikasi.dart';
 
+import 'package:financial_app/Page/transaksi.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -8,18 +12,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedItemIndex = 2;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          buildNavBarItem(Icons.recommend, 0),
-          buildNavBarItem(Icons.card_giftcard, 1),
-          buildNavBarItem(Icons.person, 2),
-        ],
-      ),
       body: Stack(
         children: [
           Column(
@@ -47,9 +42,15 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.white,
                             ),
                           ),
-                          Icon(
-                            Icons.notifications,
-                            color: Colors.white,
+                          InkWell(
+                            onTap: () => showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    NotifikasiPage()),
+                            child: Icon(
+                              Icons.notifications,
+                              color: Colors.white,
+                            ),
                           ),
                         ],
                       ),
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                             padding: EdgeInsets.all(5),
                             child: CircleAvatar(
                               backgroundImage: NetworkImage(
-                                  "https://images.pexels.com/photos/2167673/pexels-photo-2167673.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"),
+                                  "https://infopublik.id/assets/upload/headline//48_20160414103535.jpg"),
                             ),
                           ),
                           SizedBox(
@@ -155,14 +156,21 @@ class _HomePageState extends State<HomePage> {
                               "Set Profile",
                               Colors.blue.withOpacity(0.2),
                               Color(0XFF01579B), () {
-                            print('1');
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfilePage()));
                           }),
                           buildActivityButton(
                               Icons.transfer_within_a_station,
                               "Transaksi",
                               Colors.cyanAccent.withOpacity(0.2),
                               Color(0XFF0097A7), () {
-                            print('2');
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TransaksiPage(),
+                                ));
                           }),
                           buildActivityButton(
                               Icons.logout,
@@ -189,9 +197,32 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(
                         height: 20,
                       ),
-                      buildAbout('Bagaimana cara menjual barang?'),
-                      buildAbout('Bagaimana cara membeli barang?'),
-                      buildAbout('Bagaimana cara merubah profil?'),
+                      buildAbout(
+                        'Bagaimana cara menjual barang?',
+                        () => showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AboutPage(
+                                  about: 1,
+                                )),
+                      ),
+                      buildAbout(
+                        'Bagaimana cara membeli barang?',
+                        () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AboutPage(
+                            about: 2,
+                          ),
+                        ),
+                      ),
+                      buildAbout(
+                        'Bagaimana cara merubah profil?',
+                        () => showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AboutPage(
+                            about: 3,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -312,11 +343,20 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Container(
                     alignment: Alignment.centerRight,
-                    child: Text(
-                      "Tampilkan Statistik",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0XFF00B686)),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TransaksiPage(),
+                            ));
+                      },
+                      child: Text(
+                        "Tampilkan Transaksi",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0XFF00B686)),
+                      ),
                     ),
                   )
                 ],
@@ -328,34 +368,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  GestureDetector buildNavBarItem(IconData icon, int index) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedItemIndex = index;
-        });
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width / 5,
-        height: 60,
-        decoration: index == _selectedItemIndex
-            ? BoxDecoration(
-                border:
-                    Border(bottom: BorderSide(width: 4, color: Colors.green)),
-                gradient: LinearGradient(colors: [
-                  Colors.green.withOpacity(0.3),
-                  Colors.green.withOpacity(0.016),
-                ], begin: Alignment.bottomCenter, end: Alignment.topCenter))
-            : BoxDecoration(),
-        child: Icon(
-          icon,
-          color: index == _selectedItemIndex ? Color(0XFF00B868) : Colors.grey,
-        ),
-      ),
-    );
-  }
-
-  Container buildAbout(String title) {
+  Container buildAbout(String title, Function onTap) {
     return Container(
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -375,9 +388,7 @@ class _HomePageState extends State<HomePage> {
               ),
               InkWell(
                 child: Icon(Icons.navigate_next),
-                onTap: () {
-                  print('Hello');
-                },
+                onTap: onTap,
               ),
             ],
           ),

@@ -1,10 +1,9 @@
-import 'dart:io';
-
-import 'package:financial_app/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
+import 'package:financial_app/Login.dart';
 import 'package:image_picker/image_picker.dart';
 
 class DaftarPage extends StatefulWidget {
@@ -18,12 +17,13 @@ class _DaftarPageState extends State<DaftarPage> {
   TextEditingController alamat = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController nomer = TextEditingController();
+  TextEditingController umur = TextEditingController();
 
   final format = DateFormat("yyyy-MM-dd");
   // Dropdown
   List gender = ['Pria', 'Wanita'];
   String _gender;
-
+  String genderValidator;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,46 +71,70 @@ class _DaftarPageState extends State<DaftarPage> {
               key: _key,
               child: Column(
                 children: [
-                  buildForm('Nama', 'Namanya siapa?', TextInputType.name, nama),
+                  buildForm(
+                      'Nama', 'Namanya siapa?', TextInputType.name, nama, true),
                   buildForm('Alamat', 'Alamatnya dimana?',
-                      TextInputType.streetAddress, alamat),
+                      TextInputType.streetAddress, alamat, true),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(color: Colors.grey[700]))),
-                        child: DropdownButton(
-                          isExpanded: true,
-                          underline: SizedBox(),
-                          items: gender.map((e) {
-                            return DropdownMenuItem(
-                              child: Text(
-                                e,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: (genderValidator == null
+                                            ? Colors.grey[700]
+                                            : Colors.red)))),
+                            child: DropdownButton(
+                              isExpanded: true,
+                              underline: SizedBox(),
+                              items: gender.map((e) {
+                                return DropdownMenuItem(
+                                  child: Text(
+                                    e,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  value: e,
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _gender = value;
+                                });
+                              },
+                              value: _gender,
+                              hint: Text(
+                                'Gender',
                                 style: TextStyle(fontSize: 20),
                               ),
-                              value: e,
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
-                          value: _gender,
-                          hint: Text(
-                            'Gender',
-                            style: TextStyle(fontSize: 20),
+                            ),
                           ),
-                        ),
+                          genderValidator != null
+                              ? Container(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    'Pilih Salah Satu',
+                                    style: TextStyle(
+                                        color: Colors.red[700], fontSize: 12),
+                                  ),
+                                )
+                              : SizedBox()
+                        ],
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.4,
                         child: DateTimeField(
                           format: format,
+                          validator: (value) =>
+                              value == null ? 'Umur Is Empty ' : null,
+                          controller: umur,
                           style: TextStyle(fontSize: 20),
                           decoration:
                               InputDecoration(labelText: 'Lahir kapan?'),
@@ -130,22 +154,22 @@ class _DaftarPageState extends State<DaftarPage> {
                     children: [
                       Container(
                           width: MediaQuery.of(context).size.width * 0.4,
-                          child: buildForm(
-                              'Telepon', 'No.Hp', TextInputType.phone, nomer)),
+                          child: buildForm('Telepon', 'No.Hp',
+                              TextInputType.phone, nomer, true)),
                       Container(
                           width: MediaQuery.of(context).size.width * 0.4,
-                          child: buildForm('Email', 'Email',
-                              TextInputType.emailAddress, email))
+                          child: buildForm('Email', 'Email(Optional)',
+                              TextInputType.emailAddress, email, false))
                     ],
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   Row(
                     children: [
                       TextButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => Login()));
@@ -156,10 +180,34 @@ class _DaftarPageState extends State<DaftarPage> {
                           )),
                       TextButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DaftarPage2()));
+                            if (_key.currentState.validate() &&
+                                _gender != null) {
+                              print(nama.text +
+                                  alamat.text +
+                                  nomer.text +
+                                  email.text +
+                                  _gender +
+                                  umur.text);
+                              setState(() {
+                                genderValidator = null;
+                              });
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DaftarPage2(
+                                            nama: nama.text,
+                                            alamat: alamat.text,
+                                            gender: _gender,
+                                            umur: umur.text,
+                                            nomor: nomer.text,
+                                            email: email.text,
+                                          )));
+                            } else {
+                              setState(() {
+                                genderValidator = 'active';
+                              });
+                            }
                           },
                           child: Text(
                             'Lanjutkan',
@@ -177,19 +225,43 @@ class _DaftarPageState extends State<DaftarPage> {
   }
 
   Container buildForm(String name, String label, TextInputType typeInput,
-      TextEditingController _control) {
+      TextEditingController _control, bool validator) {
     return Container(
       child: TextFormField(
         style: TextStyle(fontSize: 20),
+        textCapitalization: TextCapitalization.words,
+        autofocus: true,
+        validator: validator
+            ? (value) => value.isEmpty ? '$name Is Empty ' : null
+            : null,
         controller: _control,
         keyboardType: typeInput,
-        decoration: InputDecoration(labelText: label),
+        decoration: InputDecoration(
+          labelText: label,
+        ),
       ),
     );
   }
 }
 
 class DaftarPage2 extends StatefulWidget {
+  final String nama;
+  final String alamat;
+  final String gender;
+  final String umur;
+  final String email;
+  final String nomor;
+
+  const DaftarPage2(
+      {Key key,
+      this.nama,
+      this.alamat,
+      this.gender,
+      this.umur,
+      this.email,
+      this.nomor})
+      : super(key: key);
+
   @override
   _DaftarPage2State createState() => _DaftarPage2State();
 }
@@ -215,6 +287,8 @@ class _DaftarPage2State extends State<DaftarPage2> {
     });
   }
 
+  String anggotaValidator;
+  String ktpValidator;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -237,9 +311,9 @@ class _DaftarPage2State extends State<DaftarPage2> {
                   ),
                 ),
                 Positioned(
-                  top: 60,
+                  top: 55,
                   left: 15,
-                  child: Text('Yey, \nSatu langkah lagi',
+                  child: Text('Halo,\n${widget.nama}, \nSatu langkah lagi',
                       style: GoogleFonts.roboto(fontSize: 25)),
                 ),
                 Positioned(
@@ -262,58 +336,136 @@ class _DaftarPage2State extends State<DaftarPage2> {
               key: _key,
               child: Column(
                 children: [
-                  buildForm('NIK', 'NIK', TextInputType.number, nik),
-                  buildForm(
-                      'Password', 'Buat Password', TextInputType.number, nik),
+                  buildForm('NIK', 'NIK', TextInputType.number, nik, true,
+                      'Nik tidak boleh kosong'),
+                  buildForm('Password', 'Buat Password', TextInputType.text,
+                      password, true, 'Password terlalu pendek min 4'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(color: Colors.grey[700]))),
-                        child: DropdownButton(
-                          isExpanded: true,
-                          underline: SizedBox(),
-                          items: keanggotaan.map((e) {
-                            return DropdownMenuItem(
-                              child: Text(
-                                e,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: (anggotaValidator == null
+                                            ? Colors.grey[700]
+                                            : Colors.red)))),
+                            child: DropdownButton(
+                              isExpanded: true,
+                              underline: SizedBox(),
+                              items: keanggotaan.map((e) {
+                                return DropdownMenuItem(
+                                  child: Text(
+                                    e,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  value: e,
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _keanggotaan = value;
+                                });
+                              },
+                              value: _keanggotaan,
+                              hint: Text(
+                                'Keanggotaan',
                                 style: TextStyle(fontSize: 20),
                               ),
-                              value: e,
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _keanggotaan = value;
-                            });
-                          },
-                          value: _keanggotaan,
-                          hint: Text(
-                            'Keanggotaan',
-                            style: TextStyle(fontSize: 20),
+                            ),
                           ),
-                        ),
+                          anggotaValidator != null
+                              ? Container(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    'Pilih Salah Satu',
+                                    style: TextStyle(
+                                        color: Colors.red[700], fontSize: 12),
+                                  ),
+                                )
+                              : SizedBox()
+                        ],
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(color: Colors.grey[700]))),
-                        child: TextButton(
-                          onPressed: getImage,
-                          child: Text(
-                            _image != null ? 'Berhasil' : 'Upload KTP',
-                            style: TextStyle(color: Colors.grey, fontSize: 20),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: (ktpValidator == null
+                                            ? Colors.grey[700]
+                                            : Colors.red)))),
+                            child: TextButton(
+                              onPressed: getImage,
+                              child: Text(
+                                _image != null ? 'Berhasil' : 'Upload KTP',
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 20),
+                              ),
+                            ),
                           ),
-                        ),
+                          ktpValidator != null
+                              ? Container(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    'Upload ktpnya dulu',
+                                    style: TextStyle(
+                                        color: Colors.red[700], fontSize: 12),
+                                  ),
+                                )
+                              : SizedBox()
+                        ],
                       )
                     ],
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            'Kembali',
+                            style: TextStyle(fontSize: 15, color: Colors.red),
+                          )),
+                      TextButton(
+                          onPressed: () {
+                            if (_key.currentState.validate() &&
+                                _keanggotaan != null &&
+                                _image != null) {
+                              print(password.text);
+                              setState(() {
+                                anggotaValidator = null;
+                                ktpValidator = null;
+                              });
+                            } else {
+                              setState(() {
+                                anggotaValidator = 'active';
+                                ktpValidator = 'active';
+                              });
+                            }
+                          },
+                          child: Text(
+                            'Daftar',
+                            style: TextStyle(fontSize: 15, color: Colors.blue),
+                          )),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -324,10 +476,16 @@ class _DaftarPage2State extends State<DaftarPage2> {
   }
 
   Container buildForm(String name, String label, TextInputType typeInput,
-      TextEditingController _control) {
+      TextEditingController _control, bool validator, String val) {
     return Container(
       child: TextFormField(
         style: TextStyle(fontSize: 20),
+        autofocus: true,
+        validator: validator
+            ? name == 'Password'
+                ? (value) => value.length < 4 ? '$val' : null
+                : (value) => value.isEmpty ? '$val' : null
+            : null,
         controller: _control,
         keyboardType: typeInput,
         decoration: InputDecoration(labelText: label),
