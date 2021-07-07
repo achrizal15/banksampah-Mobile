@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:financial_app/primaryButton.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PenjualanHome extends StatefulWidget {
   @override
@@ -13,6 +16,19 @@ class _PenjualanHomeState extends State<PenjualanHome> {
     {'Nama': 'Kardus', 'Satuan': 'Kg', 'Harga': '4313'},
     {'Nama': 'Plastik', 'Satuan': 'Kg', 'Harga': '54223'},
   ];
+  File _image;
+  final picker = ImagePicker();
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +44,26 @@ class _PenjualanHomeState extends State<PenjualanHome> {
             style: TextStyle(color: Colors.black),
           ),
           PrimaryButton(
-            label: 'Penjemputan',
+            label: 'Jual Sampah',
             onPressed: () => showDialog<String>(
               context: context,
               builder: (BuildContext context) => AlertDialog(
-                title: const Text('Lakukan penjemputan?'),
-                content: const Text(
-                  'Dengan harga saat ini, jika setuju admin akan segera melakukan konfirmasi. Setelah itu notifikasi penjemputan akan muncul di profil anda',
-                  textAlign: TextAlign.justify,
+                title: const Text('Upload Gambar Sampah'),
+                content: InkWell(
+                  onTap: () {
+                    getImage();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: _image == null
+                              ? NetworkImage(
+                                  'https://infopublik.id/assets/upload/headline//48_20160414103535.jpg')
+                              : FileImage(_image),
+                          fit: BoxFit.cover),
+                    ),
+                    height: 200,
+                  ),
                 ),
                 actions: <Widget>[
                   TextButton(
@@ -44,8 +72,15 @@ class _PenjualanHomeState extends State<PenjualanHome> {
                         style: TextStyle(color: Colors.red)),
                   ),
                   TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Setuju'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      final snackBar = SnackBar(
+                          content: Text(
+                              'Upload berhasil, Silahkan tunggu penjemputan'));
+
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    },
+                    child: const Text('Jual'),
                   ),
                 ],
               ),

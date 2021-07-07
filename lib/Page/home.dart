@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Padding(
                   padding:
-                      const EdgeInsets.only(left: 20, right: 20.0, top: 30),
+                      const EdgeInsets.only(left: 20, right: 20.0, top: 40),
                   child: Column(
                     children: [
                       Row(
@@ -35,11 +35,11 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           SizedBox(),
                           Text(
-                            "Available balance",
+                            "PILAH SAMPAH JADI UANG",
                             style: TextStyle(
                               fontSize: 18.0,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.yellow,
                             ),
                           ),
                           InkWell(
@@ -262,7 +262,7 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             children: [
                               Text(
-                                "Income",
+                                "Pendapatan",
                                 style: TextStyle(
                                     color: Colors.grey,
                                     fontWeight: FontWeight.bold),
@@ -292,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             children: [
                               Text(
-                                "Expenses",
+                                "Pengeluaran",
                                 style: TextStyle(
                                     color: Colors.grey,
                                     fontWeight: FontWeight.bold),

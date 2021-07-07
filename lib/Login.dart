@@ -67,16 +67,16 @@ class _LoginState extends State<Login> {
                     Positioned(
                         right: 20,
                         top: 220,
-                        child: Text('Login!',
+                        child: Text('Pilah Sampah Jadi Uang',
                             style: GoogleFonts.robotoMono(
-                                color: Colors.white,
+                                color: Colors.yellow,
                                 shadows: [
                                   Shadow(
                                       blurRadius: 8.0,
                                       offset: Offset(3, 4),
                                       color: Colors.grey[700])
                                 ],
-                                fontSize: 30,
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold))),
                   ],
                 )),

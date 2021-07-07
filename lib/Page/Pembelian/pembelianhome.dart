@@ -55,7 +55,7 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
                               border: Border(
                                   bottom: BorderSide(color: Colors.grey))),
                           child: Text(
-                            'Unggulan',
+                            'Beli Produk',
                             style: GoogleFonts.aclonica(fontSize: 22),
                           ),
                         ),

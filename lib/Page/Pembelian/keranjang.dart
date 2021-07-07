@@ -12,11 +12,12 @@ class _KeranjangPageState extends State<KeranjangPage> {
   int tes = 0;
 
   List<Map<String, String>> barang = [
-    {'nama': 'Pulsa', 'harga': '20120', 'value': '0'},
-    {'nama': 'Kompos', 'harga': '13220', 'value': '0'},
-    {'nama': 'Karbit', 'harga': '4313', 'value': '0'},
-    {'nama': 'Kadal', 'harga': '54223', 'value': '0'},
+    {'nama': 'Pulsa', 'harga': '20120', 'value': '2'},
+    {'nama': 'Kompos', 'harga': '13220', 'value': '3'},
+    {'nama': 'Karbit', 'harga': '4313', 'value': '1'},
+    {'nama': 'Kadal', 'harga': '54223', 'value': '2'},
   ];
+  TextEditingController ss = TextEditingController();
   bool kosong = false;
   @override
   Widget build(BuildContext context) {
@@ -89,27 +90,28 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: GridView.builder(
-                      itemCount: barang.length,
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 60),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1,
-                        mainAxisExtent: 160,
-                        mainAxisSpacing: 10,
-                      ),
-                      itemBuilder: (BuildContext context, int index) =>
-                          BuildKeranjang(
-                            name: barang[index]['nama'],
-                            index: index,
-                            value: tes,
-                            img: 'assets/image/kompos1.jpg',
-                            harga: barang[index]['harga'],
-                            onTap: () {
-                              setState(() {
-                                tes = tes + 1;
-                              });
-                              print(tes);
-                            },
-                          )),
+                    itemCount: barang.length,
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 60),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      mainAxisExtent: 160,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemBuilder: (BuildContext context, int index) =>
+                        BuildKeranjang(
+                      name: barang[index]['nama'],
+                      index: index,
+                      value: tes + int.parse(barang[index]['value']),
+                      img: 'assets/image/kompos1.jpg',
+                      harga: barang[index]['harga'],
+                      control: ss,
+                      onTap: () {
+                        setState(() {
+                          tes = tes + 1;
+                        });
+                      },
+                    ),
+                  ),
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
@@ -172,6 +174,7 @@ class BuildKeranjang extends StatelessWidget {
   final String harga;
   final int value;
   final Function onTap;
+  final TextEditingController control;
 
   const BuildKeranjang(
       {Key key,
@@ -180,7 +183,8 @@ class BuildKeranjang extends StatelessWidget {
       this.img,
       this.harga,
       this.value,
-      this.onTap})
+      this.onTap,
+      this.control})
       : super(key: key);
 
   @override
@@ -204,9 +208,17 @@ class BuildKeranjang extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Nama Product ' + name,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                Flexible(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 1 / 2,
+                    child: Text(
+                      'Nama sakska ads ashd jska ahs' + name,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    ),
+                  ),
                 ),
                 Text(
                   'Rp.$harga',

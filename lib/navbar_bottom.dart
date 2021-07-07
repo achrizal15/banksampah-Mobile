@@ -1,3 +1,4 @@
+import 'package:financial_app/Page/Kelompok/kelompok.dart';
 import 'package:financial_app/Page/Pembelian/pembelianhome.dart';
 import 'package:financial_app/Page/Penjualan/penjualanhome.dart';
 import 'package:financial_app/Page/home.dart';
@@ -10,15 +11,21 @@ class Navbarbottom extends StatefulWidget {
 
 class _NavbarbottomState extends State<Navbarbottom> {
   int _selectedItemIndex = 2;
-  final List page = [PembelianPageHome(), PenjualanHome(), HomePage()];
+  final List page = [
+    PembelianPageHome(),
+    PenjualanHome(),
+    HomePage(),
+    KelompokPage()
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Row(
         children: [
-          buildNavBarItem(Icons.recommend, 0),
-          buildNavBarItem(Icons.card_giftcard, 1),
           buildNavBarItem(Icons.person, 2),
+          buildNavBarItem(Icons.card_giftcard, 1),
+          buildNavBarItem(Icons.recommend, 0),
+          buildNavBarItem(Icons.group, 3),
         ],
       ),
       body: page[_selectedItemIndex],
@@ -33,7 +40,7 @@ class _NavbarbottomState extends State<Navbarbottom> {
         });
       },
       child: Container(
-        width: MediaQuery.of(context).size.width * 1 / 3,
+        width: MediaQuery.of(context).size.width * 1 / 4,
         height: 60,
         decoration: index == _selectedItemIndex
             ? BoxDecoration(
