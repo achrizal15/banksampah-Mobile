@@ -16,9 +16,9 @@ class _NavbarbottomState extends State<Navbarbottom> {
     return Scaffold(
       bottomNavigationBar: Row(
         children: [
+          buildNavBarItem(Icons.person, 2),
           buildNavBarItem(Icons.recommend, 0),
           buildNavBarItem(Icons.card_giftcard, 1),
-          buildNavBarItem(Icons.person, 2),
         ],
       ),
       body: page[_selectedItemIndex],

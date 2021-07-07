@@ -100,15 +100,8 @@ class _KeranjangPageState extends State<KeranjangPage> {
                           BuildKeranjang(
                             name: barang[index]['nama'],
                             index: index,
-                            value: tes,
                             img: 'assets/image/kompos1.jpg',
                             harga: barang[index]['harga'],
-                            onTap: () {
-                              setState(() {
-                                tes = tes + 1;
-                              });
-                              print(tes);
-                            },
                           )),
                 ),
                 Align(
@@ -165,28 +158,31 @@ class _KeranjangPageState extends State<KeranjangPage> {
   }
 }
 
-class BuildKeranjang extends StatelessWidget {
+class BuildKeranjang extends StatefulWidget {
   final int index;
   final String name;
   final String img;
   final String harga;
-  final int value;
-  final Function onTap;
 
-  const BuildKeranjang(
-      {Key key,
-      this.index,
-      this.name,
-      this.img,
-      this.harga,
-      this.value,
-      this.onTap})
-      : super(key: key);
+  const BuildKeranjang({
+    Key key,
+    this.index,
+    this.name,
+    this.img,
+    this.harga,
+  }) : super(key: key);
+
+  @override
+  _BuildKeranjangState createState() => _BuildKeranjangState();
+}
+
+class _BuildKeranjangState extends State<BuildKeranjang> {
+  final Color primaryColor = Color(0XFF00838F);
+
+  TextEditingController value = TextEditingController(text: '1');
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryColor = Color(0XFF00838F);
-
     return Container(
       color: Colors.white,
       padding: EdgeInsets.all(10),
@@ -196,8 +192,8 @@ class BuildKeranjang extends StatelessWidget {
             width: 150,
             height: 150,
             decoration: BoxDecoration(
-                image:
-                    DecorationImage(image: AssetImage(img), fit: BoxFit.cover)),
+                image: DecorationImage(
+                    image: AssetImage(widget.img), fit: BoxFit.cover)),
           ),
           Container(
             padding: EdgeInsets.only(left: 10),
@@ -205,11 +201,11 @@ class BuildKeranjang extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Nama Product ' + name,
+                  'Nama Product ' + widget.name,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  'Rp.$harga',
+                  'Rp.${widget.harga}',
                   style: TextStyle(
                       color: primaryColor,
                       fontSize: 20,
@@ -220,16 +216,34 @@ class BuildKeranjang extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Icon(
-                      Icons.remove,
-                      color: Colors.red,
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          if (int.parse(value.text) > 0) {
+                            value.text = (int.parse(value.text) - 1).toString();
+                          } else {
+                            value.text = '0';
+                          }
+                        });
+                      },
+                      child: Icon(
+                        Icons.remove,
+                        color: Colors.red,
+                      ),
                     ),
                     Container(
                       width: 80,
                       child: TextFormField(
-                        controller: TextEditingController(text: '$value'),
+                        controller: value,
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.number,
+                        onChanged: (c) {
+                          setState(() {
+                            if (value.text == '') {
+                              value.text = '0';
+                            }
+                          });
+                        },
                         inputFormatters: [
                           LengthLimitingTextInputFormatter(6),
                           FilteringTextInputFormatter.allow(
@@ -241,7 +255,11 @@ class BuildKeranjang extends StatelessWidget {
                       ),
                     ),
                     InkWell(
-                        onTap: onTap,
+                        onTap: () {
+                          setState(() {
+                            value.text = (int.parse(value.text) + 1).toString();
+                          });
+                        },
                         child: Icon(
                           Icons.add,
                           color: Colors.green,

@@ -27,17 +27,16 @@ class _LoginState extends State<Login> {
                 height: 260,
                 width: MediaQuery.of(context).size.width * 1,
                 decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 3,
-                          blurRadius: 7,
-                          offset: Offset(0, 3))
-                    ],
-                    gradient: LinearGradient(
-                        colors: [Color(0XFF00B686), Color(0XFF00838F)]),
-                    borderRadius:
-                        BorderRadius.only(bottomLeft: Radius.circular(100))),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 3,
+                        blurRadius: 7,
+                        offset: Offset(0, 3))
+                  ],
+                  gradient: LinearGradient(
+                      colors: [Color(0XFF00B686), Color(0XFF00838F)]),
+                ),
                 child: Stack(
                   children: [
                     Positioned(
