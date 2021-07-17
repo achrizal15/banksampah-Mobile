@@ -1,4 +1,5 @@
 import 'package:financial_app/Login.dart';
+import 'package:financial_app/Models/http_products.dart';
 import 'package:financial_app/Page/editprofile.dart';
 import 'package:financial_app/Page/popUpPage/about.dart';
 import 'package:financial_app/Page/popUpPage/notifikasi.dart';
@@ -344,13 +345,7 @@ class _HomePageState extends State<HomePage> {
                   Container(
                     alignment: Alignment.centerRight,
                     child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TransaksiPage(),
-                            ));
-                      },
+                      onTap: () {},
                       child: Text(
                         "Tampilkan Transaksi",
                         style: TextStyle(

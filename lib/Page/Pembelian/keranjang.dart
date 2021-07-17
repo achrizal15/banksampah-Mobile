@@ -1,3 +1,4 @@
+import 'package:financial_app/Service/keranjang_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,29 +10,54 @@ class KeranjangPage extends StatefulWidget {
 class _KeranjangPageState extends State<KeranjangPage> {
   final Color primaryColor = Color(0XFF00838F);
   final Color seconColor = Color(0XFF00B686);
-  int tes = 0;
+  var _keranjangService = KeranjangService();
+  TextEditingController value;
+  int jumlah = 1;
+  var total;
+  List item = [];
 
-  List<Map<String, String>> barang = [
-    {'nama': 'Pulsa', 'harga': '20120', 'value': '0'},
-    {'nama': 'Kompos', 'harga': '13220', 'value': '0'},
-    {'nama': 'Karbit', 'harga': '4313', 'value': '0'},
-    {'nama': 'Kadal', 'harga': '54223', 'value': '0'},
-  ];
-  bool kosong = false;
+  @override
+  void initState() {
+    super.initState();
+    getKeranjangData();
+  }
+
+  getKeranjangData() async {
+    List<Map<String, dynamic>> ite = [];
+    var keranjang = await _keranjangService.readKeranjang();
+    keranjang.forEach((keranjang) {
+      setState(() {
+        ite.add({
+          'nama': keranjang['nama'],
+          'harga': keranjang['harga'],
+          'stock': keranjang['stock'],
+          'images': keranjang['images'],
+          'jumlah': int.parse(keranjang['jumlah']),
+        });
+      });
+    });
+
+    List<dynamic> stackDuplicates(items) {
+      Map<String, dynamic> uniqueItems = {};
+      for (Map item in items) {
+        final key = '${item["nama"]}-${item["harga"]}';
+        (uniqueItems[key] == null)
+            ? uniqueItems[key] = item
+            : uniqueItems[key]['jumlah'] += item['jumlah'];
+      }
+      return uniqueItems.values.toList();
+    }
+
+    item = stackDuplicates(ite);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kosong == true ? primaryColor : Colors.grey[300],
-      appBar: AppBar(
-          title: InkWell(
-              onTap: () {
-                setState(() {
-                  kosong = !kosong;
-                });
-              },
-              child: Text('Keranjang Saya')),
-          backgroundColor: primaryColor),
-      body: kosong == true
+      backgroundColor: item.length == 0 ? primaryColor : Colors.grey[300],
+      appBar:
+          AppBar(title: Text('Keranjang Saya'), backgroundColor: primaryColor),
+      body: item.length == 0
           ? Column(
               children: [
                 Container(
@@ -89,20 +115,125 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: GridView.builder(
-                      itemCount: barang.length,
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 60),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1,
-                        mainAxisExtent: 160,
-                        mainAxisSpacing: 10,
+                    itemCount: item.length,
+                    padding: EdgeInsets.only(bottom: 70),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      mainAxisExtent: 160,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemBuilder: (BuildContext context, int index) => Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: NetworkImage(item[index]['images']),
+                                    fit: BoxFit.cover)),
+                          ),
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width *
+                                      1 /
+                                      1.8,
+                                  child: Text(
+                                    item[index]['nama'],
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                Text(
+                                  'Rp.' + item[index]['harga'],
+                                  style: TextStyle(
+                                      color: primaryColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                SizedBox(
+                                  height: 2,
+                                ),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          if (item[index]['jumlah'] <= 1) {
+                                            item.removeAt(index);
+                                          } else {
+                                            item[index]['jumlah'] =
+                                                item[index]['jumlah'] - 1;
+                                          }
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.remove,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 80,
+                                      child: TextFormField(
+                                        controller: value =
+                                            TextEditingController(
+                                                text: item[index]['jumlah']
+                                                    .toString()),
+                                        textAlign: TextAlign.center,
+                                        keyboardType: TextInputType.number,
+                                        onChanged: (v) {
+                                          setState(() {
+                                            if (v == '') {
+                                              item[index]['jumlah'] = 1;
+                                            }
+                                          });
+                                        },
+                                        inputFormatters: [
+                                          LengthLimitingTextInputFormatter(6),
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'^\d+(?:\.\d+)?$')),
+                                        ],
+                                        decoration: InputDecoration(
+                                            border: UnderlineInputBorder(
+                                                borderSide: BorderSide.none)),
+                                      ),
+                                    ),
+                                    InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            if (item[index]['jumlah'] <
+                                                int.parse(
+                                                    item[index]['stock'])) {
+                                              item[index]['jumlah'] =
+                                                  item[index]['jumlah'] + 1;
+                                            } else {
+                                              print('Kosong');
+                                            }
+                                          });
+                                        },
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.green,
+                                        ))
+                                  ],
+                                ),
+                                Text('STOCK : ' + item[index]['stock'])
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      itemBuilder: (BuildContext context, int index) =>
-                          BuildKeranjang(
-                            name: barang[index]['nama'],
-                            index: index,
-                            img: 'assets/image/kompos1.jpg',
-                            harga: barang[index]['harga'],
-                          )),
+                    ),
+                  ),
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
@@ -125,7 +256,13 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                 style: TextStyle(color: seconColor),
                                 children: [
                                   TextSpan(
-                                      text: " Rp 200.500",
+                                      text: "Rp." +
+                                          item
+                                              .map<int>((m) =>
+                                                  int.parse(m['stock']) *
+                                                  m["jumlah"])
+                                              .reduce((a, b) => a + b)
+                                              .toString(),
                                       style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.w600,
@@ -154,124 +291,6 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 )
               ],
             ),
-    );
-  }
-}
-
-class BuildKeranjang extends StatefulWidget {
-  final int index;
-  final String name;
-  final String img;
-  final String harga;
-
-  const BuildKeranjang({
-    Key key,
-    this.index,
-    this.name,
-    this.img,
-    this.harga,
-  }) : super(key: key);
-
-  @override
-  _BuildKeranjangState createState() => _BuildKeranjangState();
-}
-
-class _BuildKeranjangState extends State<BuildKeranjang> {
-  final Color primaryColor = Color(0XFF00838F);
-
-  TextEditingController value = TextEditingController(text: '1');
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.all(10),
-      child: Row(
-        children: [
-          Container(
-            width: 150,
-            height: 150,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(widget.img), fit: BoxFit.cover)),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Nama Product ' + widget.name,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  'Rp.${widget.harga}',
-                  style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500),
-                ),
-                SizedBox(
-                  height: 2,
-                ),
-                Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          if (int.parse(value.text) > 0) {
-                            value.text = (int.parse(value.text) - 1).toString();
-                          } else {
-                            value.text = '0';
-                          }
-                        });
-                      },
-                      child: Icon(
-                        Icons.remove,
-                        color: Colors.red,
-                      ),
-                    ),
-                    Container(
-                      width: 80,
-                      child: TextFormField(
-                        controller: value,
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.number,
-                        onChanged: (c) {
-                          setState(() {
-                            if (value.text == '') {
-                              value.text = '0';
-                            }
-                          });
-                        },
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(6),
-                          FilteringTextInputFormatter.allow(
-                              RegExp(r'^\d+(?:\.\d+)?$')),
-                        ],
-                        decoration: InputDecoration(
-                            border: UnderlineInputBorder(
-                                borderSide: BorderSide.none)),
-                      ),
-                    ),
-                    InkWell(
-                        onTap: () {
-                          setState(() {
-                            value.text = (int.parse(value.text) + 1).toString();
-                          });
-                        },
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.green,
-                        ))
-                  ],
-                ),
-                Text('* Selain product online harus  \n   mengambil ke kantor')
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

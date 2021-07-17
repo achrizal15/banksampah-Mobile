@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "437482359334",
+    "project_id": "banksampahbwi-f9a38",
+    "storage_bucket": "banksampahbwi-f9a38.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:437482359334:android:2086c9ce863d591be434e7",
+        "android_client_info": {
+          "package_name": "com.banksampah_mobile.merdeka_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "437482359334-un66mhuvf7ji57csit6i1b0qebt7lvag.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC991PqrDj4ijgHfb3upi73DzP2eHs-G58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "437482359334-un66mhuvf7ji57csit6i1b0qebt7lvag.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -267,6 +267,7 @@ class DaftarPage2 extends StatefulWidget {
 }
 
 class _DaftarPage2State extends State<DaftarPage2> {
+
   final _key = GlobalKey<FormState>();
   TextEditingController nik = TextEditingController();
   TextEditingController password = TextEditingController();
