@@ -22,4 +22,9 @@ class Repository {
     var connection = await database;
     return await connection.query(table);
   }
+
+  removeData(table) async {
+    var connection = await database;
+    return await connection.delete(table);
+  }
 }

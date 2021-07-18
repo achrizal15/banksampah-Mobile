@@ -13,4 +13,8 @@ class KeranjangService {
   readKeranjang() async {
     return await _repository.readData('keranjang');
   }
+
+  deleteKeranjang() async {
+    return await _repository.removeData('keranjang');
+  }
 }

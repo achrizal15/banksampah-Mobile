@@ -1,3 +1,5 @@
+import 'package:financial_app/Models/keranjang.dart';
+import 'package:financial_app/Page/Pembelian/pembelianhome.dart';
 import 'package:financial_app/Service/keranjang_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +12,7 @@ class KeranjangPage extends StatefulWidget {
 class _KeranjangPageState extends State<KeranjangPage> {
   final Color primaryColor = Color(0XFF00838F);
   final Color seconColor = Color(0XFF00B686);
+  var _keranjang = Keranjang();
   var _keranjangService = KeranjangService();
   TextEditingController value;
   int jumlah = 1;
@@ -55,8 +58,17 @@ class _KeranjangPageState extends State<KeranjangPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: item.length == 0 ? primaryColor : Colors.grey[300],
-      appBar:
-          AppBar(title: Text('Keranjang Saya'), backgroundColor: primaryColor),
+      appBar: AppBar(
+        title: Text('Keranjang Saya'),
+        backgroundColor: primaryColor,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => PembelianPageHome()));
+          },
+        ),
+      ),
       body: item.length == 0
           ? Column(
               children: [
@@ -99,7 +111,10 @@ class _KeranjangPageState extends State<KeranjangPage> {
                         side: MaterialStateProperty.all(
                             BorderSide(color: Colors.white))),
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PembelianPageHome()));
                     },
                     child: Text(
                       'Belanja Sekarang',
@@ -170,6 +185,8 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                         setState(() {
                                           if (item[index]['jumlah'] <= 1) {
                                             item.removeAt(index);
+                                            KeranjangService()
+                                                .deleteKeranjang();
                                           } else {
                                             item[index]['jumlah'] =
                                                 item[index]['jumlah'] - 1;

@@ -18,6 +18,7 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
   final Color seconColor = Color(0XFF00B686);
   var _keranjang = Keranjang();
   var _keranjangService = KeranjangService();
+  int jumlah;
   Future<List<HttpProducts>> futureData;
   List<Keranjang> _keranjangList = List<Keranjang>.empty(growable: true);
   @override
@@ -123,10 +124,10 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
                                           _keranjang.jumlah = '1';
                                           var a = await _keranjangService
                                               .saveKeranjang(_keranjang);
-                                   
-                                         
 
-                                          setState(() {});
+                                          setState(() {
+                                            getKeranjangData();
+                                          });
                                         },
                                         child: Text(
                                           'Beli',
@@ -195,7 +196,7 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
                                 color: Colors.white,
                               ),
                               onPressed: () {
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => KeranjangPage()));
@@ -211,7 +212,7 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
                                     color: Colors.red[500]),
                                 child: Center(
                                     child: Text(
-                                  '1',
+                                  _keranjangList.length.toString(),
                                   style: TextStyle(color: Colors.white),
                                 ))),
                           ),
