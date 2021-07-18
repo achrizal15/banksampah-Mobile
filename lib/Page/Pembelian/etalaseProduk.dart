@@ -6,12 +6,12 @@ import 'package:financial_app/Service/keranjang_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class PembelianPageHome extends StatefulWidget {
+class EtalaseProduct extends StatefulWidget {
   @override
-  _PembelianPageHomeState createState() => _PembelianPageHomeState();
+  _EtalaseProductState createState() => _EtalaseProductState();
 }
 
-class _PembelianPageHomeState extends State<PembelianPageHome> {
+class _EtalaseProductState extends State<EtalaseProduct> {
   GlobalKey<ScaffoldState> _scaffold = GlobalKey<ScaffoldState>();
   final Color primaryColor = Color(0XFF00838F);
   final Color seconColor = Color(0XFF00B686);
@@ -54,101 +54,12 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
     return Scaffold(
       key: _scaffold,
       endDrawer: DrawerPage(),
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[200],
-      body: Stack(
+      body: Column(
         children: [
-          Container(
-            height: 300,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Color(0XFF00B686), Color(0XFF00838F)]),
-            ),
-          ),
-          //  Product
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-                color: Colors.grey[100],
-                height: MediaQuery.of(context).size.height * 1 / 1.6,
-                child: data.length == 0
-                    ? Center(child: Text('Loading...'))
-                    : GridView.builder(
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 200,
-                            childAspectRatio: 2 / 2,
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 20),
-                        itemCount: data.length,
-                        itemBuilder: (BuildContext context, index) {
-                          return Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                      offset: Offset(1, 7),
-                                      color: Colors.black38,
-                                      blurRadius: 7)
-                                ]),
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 100,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: NetworkImage(data[index].image),
-                                        fit: BoxFit.cover),
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.all(10),
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    data[index].title,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.all(10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Rp.' + data[index].price,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      InkWell(
-                                        onTap: () async {
-                                          _keranjang.nama = data[index].title;
-                                          _keranjang.images = data[index].image;
-                                          _keranjang.harga = data[index].price;
-                                          _keranjang.stock = '10';
-                                          _keranjang.jumlah = '1';
-                                          var a = await _keranjangService
-                                              .saveKeranjang(_keranjang);
-                                          print(a);
-                                          setState(() {
-                                            getKeranjangData();
-                                          });
-                                        },
-                                        child: Text(
-                                          'Beli',
-                                          style: TextStyle(
-                                              color: Color(0XFF00838F)),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        })),
-          ),
-          //  AppBar
-          Align(
-            alignment: Alignment.topCenter,
+          Flexible(
+            flex: 1,
             child: Column(
               children: [
                 Container(
@@ -233,13 +144,109 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
-                Container(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    child: hedingBuild()),
+                hedingBuild()
               ],
             ),
           ),
+          //  Product
+          Flexible(
+            fit: FlexFit.tight,
+            flex: 3,
+            child: Container(
+                padding: EdgeInsets.only(top: 10),
+                color: Colors.grey[100],
+                child: filterData.length == 0
+                    ? Center(
+                        child: Container(
+                        height: 30,
+                        width: 30,
+                        child: CircularProgressIndicator(),
+                      ))
+                    : data.length == 0
+                        ? Center(
+                            child: Text('Data tidak ditemukan...'),
+                          )
+                        : GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithMaxCrossAxisExtent(
+                                    maxCrossAxisExtent: 200,
+                                    childAspectRatio: 2 / 2.5,
+                                    crossAxisSpacing: 20,
+                                    mainAxisSpacing: 20),
+                            itemCount: data.length,
+                            itemBuilder: (BuildContext context, index) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          offset: Offset(1, 7),
+                                          color: Colors.black38,
+                                          blurRadius: 7)
+                                    ]),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: 150,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image:
+                                                NetworkImage(data[index].image),
+                                            fit: BoxFit.cover),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.all(10),
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        data[index].title,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Rp.' + data[index].price,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          InkWell(
+                                            onTap: () async {
+                                              _keranjang.nama =
+                                                  data[index].title;
+                                              _keranjang.images =
+                                                  data[index].image;
+                                              _keranjang.harga =
+                                                  data[index].price;
+                                              _keranjang.stock = '10';
+                                              _keranjang.jumlah = '1';
+                                              var a = await _keranjangService
+                                                  .saveKeranjang(_keranjang);
+                                              print(a);
+                                              setState(() {
+                                                getKeranjangData();
+                                              });
+                                            },
+                                            child: Text(
+                                              'Beli',
+                                              style: TextStyle(
+                                                  color: Color(0XFF00838F)),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            })),
+          ),
+
+          //  AppBar
         ],
       ),
     );
@@ -267,7 +274,7 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               buildUnggulan('Kreatif', 'assets/image/kreatif.png', true),
               buildUnggulan('Kompos', 'assets/image/kompos.png', true),
@@ -281,8 +288,7 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
 
   Container buildUnggulan(String label, String img, bool none) {
     return Container(
-      width: MediaQuery.of(context).size.width * 1 / 3.4,
-      height: 80,
+      width: 100,
       decoration: BoxDecoration(
           border: Border(
               right: none ? BorderSide(color: Colors.grey) : BorderSide.none)),

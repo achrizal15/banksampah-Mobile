@@ -1,4 +1,4 @@
-import 'package:financial_app/Page/Pembelian/pembelianhome.dart';
+import 'package:financial_app/Page/Pembelian/etalaseProduk.dart';
 import 'package:financial_app/Page/Penjualan/penjualanhome.dart';
 import 'package:financial_app/Page/home.dart';
 import 'package:flutter/material.dart';
@@ -13,16 +13,18 @@ class Navbarbottom extends StatefulWidget {
 
 class _NavbarbottomState extends State<Navbarbottom> {
   int _selectedItemIndex;
+
   @override
   void initState() {
     super.initState();
     _selectedItemIndex = widget.pageSelect;
   }
 
-  final List page = [PembelianPageHome(), PenjualanHome(), HomePage()];
+  final List page = [EtalaseProduct(), PenjualanHome(), HomePage()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       bottomNavigationBar: Row(
         children: [
           buildNavBarItem(Icons.person, 2),
@@ -34,7 +36,10 @@ class _NavbarbottomState extends State<Navbarbottom> {
     );
   }
 
-  GestureDetector buildNavBarItem(IconData icon, int index) {
+  GestureDetector buildNavBarItem(
+    IconData icon,
+    int index,
+  ) {
     return GestureDetector(
       onTap: () {
         setState(() {
