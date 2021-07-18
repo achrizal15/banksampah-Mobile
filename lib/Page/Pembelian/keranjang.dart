@@ -1,5 +1,3 @@
-import 'package:financial_app/Models/keranjang.dart';
-import 'package:financial_app/Page/Pembelian/pembelianhome.dart';
 import 'package:financial_app/Service/keranjang_service.dart';
 import 'package:financial_app/navbar_bottom.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +11,6 @@ class KeranjangPage extends StatefulWidget {
 class _KeranjangPageState extends State<KeranjangPage> {
   final Color primaryColor = Color(0XFF00838F);
   final Color seconColor = Color(0XFF00B686);
-  var _keranjang = Keranjang();
   var _keranjangService = KeranjangService();
   TextEditingController value;
   int jumlah = 1;

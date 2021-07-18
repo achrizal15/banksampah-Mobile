@@ -4,7 +4,6 @@ import 'package:financial_app/Page/Pembelian/drawer.dart';
 import 'package:financial_app/Page/Pembelian/keranjang.dart';
 import 'package:financial_app/Service/keranjang_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PembelianPageHome extends StatefulWidget {
@@ -124,7 +123,7 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
                                           _keranjang.jumlah = '1';
                                           var a = await _keranjangService
                                               .saveKeranjang(_keranjang);
-
+                                          print(a + 'masuk ke sql');
                                           setState(() {
                                             getKeranjangData();
                                           });
