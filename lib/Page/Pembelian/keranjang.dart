@@ -1,6 +1,7 @@
 import 'package:financial_app/Models/keranjang.dart';
 import 'package:financial_app/Page/Pembelian/pembelianhome.dart';
 import 'package:financial_app/Service/keranjang_service.dart';
+import 'package:financial_app/navbar_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -62,10 +63,14 @@ class _KeranjangPageState extends State<KeranjangPage> {
         title: Text('Keranjang Saya'),
         backgroundColor: primaryColor,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => PembelianPageHome()));
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Navbarbottom(
+                          pageSelect: 0,
+                        )));
           },
         ),
       ),
@@ -114,7 +119,9 @@ class _KeranjangPageState extends State<KeranjangPage> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => PembelianPageHome()));
+                              builder: (context) => Navbarbottom(
+                                    pageSelect: 0,
+                                  )));
                     },
                     child: Text(
                       'Belanja Sekarang',
