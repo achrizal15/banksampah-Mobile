@@ -18,13 +18,19 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
   var _keranjang = Keranjang();
   var _keranjangService = KeranjangService();
   int jumlah;
-  Future<List<HttpProducts>> futureData;
+  List<HttpProducts> filterData = [];
+  List<HttpProducts> data = [];
   List<Keranjang> _keranjangList = List<Keranjang>.empty(growable: true);
   @override
   void initState() {
     super.initState();
     getKeranjangData();
-    futureData = fetchData();
+    fetchData().then((user) {
+      setState(() {
+        filterData = user;
+        data = filterData;
+      });
+    });
   }
 
   getKeranjangData() async {
@@ -62,13 +68,11 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: MediaQuery.of(context).size.height * 1 / 1.7,
-              child: FutureBuilder<List<HttpProducts>>(
-                future: futureData,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<HttpProducts> data = snapshot.data;
-                    return GridView.builder(
+                color: Colors.grey[100],
+                height: MediaQuery.of(context).size.height * 1 / 1.6,
+                child: data.length == 0
+                    ? Center(child: Text('Loading...'))
+                    : GridView.builder(
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 200,
                             childAspectRatio: 2 / 2,
@@ -123,7 +127,7 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
                                           _keranjang.jumlah = '1';
                                           var a = await _keranjangService
                                               .saveKeranjang(_keranjang);
-                                          print(a + 'masuk ke sql');
+                                          print(a);
                                           setState(() {
                                             getKeranjangData();
                                           });
@@ -140,15 +144,7 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
                               ],
                             ),
                           );
-                        });
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
-                  // By default show a loading spinner.
-                  return CircularProgressIndicator();
-                },
-              ),
-            ),
+                        })),
           ),
           //  AppBar
           Align(
@@ -171,6 +167,15 @@ class _PembelianPageHomeState extends State<PembelianPageHome> {
                         width: MediaQuery.of(context).size.width * 0.7,
                         child: TextField(
                           autofocus: false,
+                          onChanged: (v) {
+                            setState(() {
+                              data = filterData
+                                  .where((e) => (e.title
+                                      .toLowerCase()
+                                      .contains(v.toLowerCase())))
+                                  .toList();
+                            });
+                          },
                           decoration: InputDecoration(
                               hintText: 'Cari barang',
                               hintStyle: TextStyle(fontSize: 15),
