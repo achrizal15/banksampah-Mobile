@@ -49,11 +49,22 @@ class _EtalaseProductState extends State<EtalaseProduct> {
     });
   }
 
+  void setCategory(category) {
+    setState(() {
+      data = filterData
+          .where((e) =>
+              (e.category.toLowerCase().contains(category.toLowerCase())))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffold,
-      endDrawer: DrawerPage(),
+      endDrawer: DrawerPage(
+        customCategory: setCategory,
+      ),
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey[200],
       body: Column(

@@ -1,8 +1,32 @@
+import 'package:financial_app/Models/http_products.dart';
 import 'package:financial_app/primaryButton.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class DrawerPage extends StatelessWidget {
-  
+class DrawerPage extends StatefulWidget {
+  final customCategory;
+
+  const DrawerPage({Key key, this.customCategory}) : super(key: key);
+  @override
+  _DrawerPageState createState() => _DrawerPageState();
+}
+
+class _DrawerPageState extends State<DrawerPage> {
+  List _category = [];
+  List<dynamic> data = [];
+  @override
+  void initState() {
+    super.initState();
+    fetchData().then((category) {
+      setState(() {
+        category.forEach((e) {
+          data.add(e.category);
+        });
+        _category = data.toSet().toList();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -34,48 +58,29 @@ class DrawerPage extends StatelessWidget {
                   )),
             ),
             Container(
-              height: MediaQuery.of(context).size.height * 2 / 2.9,
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: ListView.builder(
-                  itemCount: 10,
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (BuildContext context, int index) =>
-                      index % 2 == 0
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                PrimaryButton(
-                                  onPressed: () {
-                                    print(1);
-                                  },
-                                  label: 'Pulsa $index',
-                                ),
-                                PrimaryButton(
-                                  onPressed: () {
-                                    print(1);
-                                  },
-                                  label: 'Pulsa dan Tagihan',
-                                ),
-                              ],
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                PrimaryButton(
-                                  onPressed: () {
-                                    print(1);
-                                  },
-                                  label: 'Pulsa $index Kerajinan',
-                                ),
-                                PrimaryButton(
-                                  onPressed: () {
-                                    print(1);
-                                  },
-                                  label: 'Kompos ',
-                                ),
-                              ],
-                            )),
-            )
+                height: MediaQuery.of(context).size.height * 2 / 2.9,
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: _category.length == 0
+                    ? Text('Loading...')
+                    : Wrap(
+                        spacing: 10,
+                        alignment: WrapAlignment.spaceBetween,
+                        children: [
+                          PrimaryButton(
+                            onPressed: () {
+                              widget.customCategory('');
+                            },
+                            label: 'All Product',
+                          ),
+                          for (var i = 0; i < _category.length; i++)
+                            PrimaryButton(
+                              onPressed: () {
+                                widget.customCategory(_category[i]);
+                              },
+                              label: _category[i],
+                            ),
+                        ],
+                      ))
           ],
         ));
   }

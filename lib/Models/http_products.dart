@@ -13,13 +13,14 @@ Future<List<HttpProducts>> fetchData() async {
 }
 
 class HttpProducts {
-  String id, title, price, image;
-  HttpProducts({this.id, this.title, this.price, this.image});
+  String id, title, price, image, category;
+  HttpProducts({this.id, this.title, this.price, this.image, this.category});
   factory HttpProducts.fromJson(Map<String, dynamic> json) {
     return HttpProducts(
         id: json['id'].toString(),
         title: json['title'],
         price: json['price'].toString(),
+        category: json['category'],
         image: json['image']);
   }
 }
