@@ -5,6 +5,7 @@ import 'package:financial_app/Page/popUpPage/notifikasi.dart';
 
 import 'package:financial_app/Page/transaksi.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -176,7 +177,11 @@ class _HomePageState extends State<HomePage> {
                               Icons.logout,
                               "Logout",
                               Color(0XFFD7CCC8).withOpacity(0.4),
-                              Colors.red.withOpacity(0.4), () {
+                              Colors.red.withOpacity(0.4), () async {
+                            final prefs = await SharedPreferences.getInstance();
+                            prefs.setBool('isLogin', false);
+                            print(prefs.getString('nik'));
+
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(

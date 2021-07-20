@@ -3,6 +3,8 @@ import 'package:financial_app/navbar_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   @override
@@ -14,8 +16,27 @@ class _LoginState extends State<Login> {
   bool _obs = true;
   TextEditingController pass = TextEditingController();
   TextEditingController nik = TextEditingController();
-  // int _nik;
-  // String _pass;
+  bool isLogin = false;
+  getLogin() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('nik', nik.text);
+    pref.setString('password', pass.text);
+    pref.setBool('isLogin', true);
+  }
+
+  fetchData(String email, String password) async {
+    final response = await http.post(Uri.parse('https://reqres.in/api/login'),
+        body: {"email": email, "password": password});
+    var data = response.body;
+    try {
+      if (response.statusCode == 400 || response.statusCode == 200) {
+        print(data);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,7 +132,8 @@ class _LoginState extends State<Login> {
                                     Color(0XFF00838F))),
                             onPressed: () {
                               if (_key.currentState.validate()) {
-                                print(nik.text + pass.text);
+                                getLogin();
+                                fetchData('eve.holt@reqres.in', 'cityslicka');
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
