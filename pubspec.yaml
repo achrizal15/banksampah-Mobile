@@ -35,6 +35,7 @@ dependencies:
   path_provider: ^2.0.2
   shared_preferences: ^2.0.6
   sqflite: ^2.0.0+3
+  pretty_json:
 dev_dependencies:
   flutter_test:
     sdk: flutter

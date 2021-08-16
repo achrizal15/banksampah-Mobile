@@ -1,4 +1,4 @@
-import 'package:financial_app/Models/http_products.dart';
+import 'package:financial_app/Models/Product.dart';
 import 'package:financial_app/primaryButton.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,13 +17,13 @@ class _DrawerPageState extends State<DrawerPage> {
   @override
   void initState() {
     super.initState();
-    fetchData().then((category) {
-      setState(() {
-        category.forEach((e) {
-          data.add(e.category);
-        });
-        _category = data.toSet().toList();
-      });
+    fetchProduct().then((category) {
+      // setState(() {
+      //   category.forEach((e) {
+      //     // data.add(e.category);
+      //   });
+      //   _category = data.toSet().toList();
+      // });
     });
   }
 

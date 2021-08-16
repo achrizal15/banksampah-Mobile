@@ -1,4 +1,4 @@
-import 'package:financial_app/Models/http_products.dart';
+import 'package:financial_app/Models/Product.dart';
 import 'package:financial_app/Models/keranjang.dart';
 import 'package:financial_app/Page/Pembelian/drawer.dart';
 import 'package:financial_app/Page/Pembelian/keranjang.dart';
@@ -18,14 +18,14 @@ class _EtalaseProductState extends State<EtalaseProduct> {
   var _keranjang = Keranjang();
   var _keranjangService = KeranjangService();
   int jumlah;
-  List<HttpProducts> filterData = [];
-  List<HttpProducts> data = [];
+  List<Product> filterData = [];
+  List<Product> data = [];
   List<Keranjang> _keranjangList = List<Keranjang>.empty(growable: true);
   @override
   void initState() {
     super.initState();
     getKeranjangData();
-    fetchData().then((user) {
+    fetchProduct().then((user) {
       setState(() {
         filterData = user;
         data = filterData;
@@ -40,22 +40,22 @@ class _EtalaseProductState extends State<EtalaseProduct> {
       setState(() {
         var krModel = Keranjang();
         krModel.id = keranjang['id'];
-        krModel.nama = keranjang['nama'];
-        krModel.harga = keranjang['harga'];
+        krModel.nama = keranjang['name'];
+        krModel.harga = keranjang['price'];
         krModel.stock = keranjang['stock'];
-        krModel.images = keranjang['images'];
+        krModel.images = keranjang['picture'];
         _keranjangList.add(krModel);
       });
     });
   }
 
   void setCategory(category) {
-    setState(() {
-      data = filterData
-          .where((e) =>
-              (e.category.toLowerCase().contains(category.toLowerCase())))
-          .toList();
-    });
+    // setState(() {
+    //   data = filterData
+    //       .where((e) =>
+    //           (e.category.toLowerCase().contains(category.toLowerCase())))
+    //       .toList();
+    // });
   }
 
   @override
@@ -91,11 +91,11 @@ class _EtalaseProductState extends State<EtalaseProduct> {
                           autofocus: false,
                           onChanged: (v) {
                             setState(() {
-                              data = filterData
-                                  .where((e) => (e.title
-                                      .toLowerCase()
-                                      .contains(v.toLowerCase())))
-                                  .toList();
+                              // data = filterData
+                              //     .where((e) => (e.title
+                              //         .toLowerCase()
+                              //         .contains(v.toLowerCase())))
+                              //     .toList();
                             });
                           },
                           decoration: InputDecoration(
@@ -201,8 +201,8 @@ class _EtalaseProductState extends State<EtalaseProduct> {
                                       height: 150,
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
-                                            image:
-                                                NetworkImage(data[index].image),
+                                            image: NetworkImage(
+                                                data[index].picture),
                                             fit: BoxFit.cover),
                                       ),
                                     ),
@@ -210,7 +210,7 @@ class _EtalaseProductState extends State<EtalaseProduct> {
                                       padding: EdgeInsets.all(10),
                                       alignment: Alignment.topLeft,
                                       child: Text(
-                                        data[index].title,
+                                        data[index].name,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
@@ -221,18 +221,19 @@ class _EtalaseProductState extends State<EtalaseProduct> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            'Rp.' + data[index].price,
+                                            'Rp.' +
+                                                data[index].price.toString(),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           InkWell(
                                             onTap: () async {
                                               _keranjang.nama =
-                                                  data[index].title;
+                                                  data[index].name;
                                               _keranjang.images =
-                                                  data[index].image;
+                                                  data[index].picture;
                                               _keranjang.harga =
-                                                  data[index].price;
+                                                  data[index].price.toString();
                                               _keranjang.stock = '10';
                                               _keranjang.jumlah = '1';
                                               var a = await _keranjangService
